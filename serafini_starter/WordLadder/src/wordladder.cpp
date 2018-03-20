@@ -6,20 +6,56 @@
 #include <ctype.h>
 #include "console.h"
 #include "lexicon.h"
+#include "vector.h"
+#include "queue.h"
 
 using namespace std;
 
-int main() {
-    cout << "Welcome to CS 106B Word Ladder." << endl;
-    cout << "Please give me two English words, and I will change the" << endl;
-    cout << "first into the second by changing one letter at a time." << endl;
-    int s;
+static void welcome();
+static string getfilename();
+static bool getword(const Lexicon& dictionary, string& word, string prompt);
+static bool checkword(const Lexicon& dictionary, string& word1, string& word2);
+static Vector<string> getwordladder(const Lexicon& dictionary, const string& word1, const string& word2);
+static Lexicon onehoaway(const Lexicon& dictionary, Lexicon& new_words, const string& firword);
+static void printwordladder(const Vector<string>& wordladder, const string& word1, const string& word2);
 
+int main(){
+    welcome();
+    string file = getfilename();
+    Lexicon dictionary(file);
+
+    while (true) {
+        string word1;
+        string word2;
+        Vector<string> wordladder;
+
+        if(getword(dictionary, word1, "Word #1 (or Enter to quit):"))   break;
+        if(getword(dictionary, word2, "Word #1 (or Enter to quit):"))   break;
+        if(checkword(dictionary, word1, word2))     break;
+
+        wordladder = getwordladder(dictionary, word1, word2);
+        printwordladder(wordladder, word1, word2);
+
+    }
+
+    cout << "Have a nice day." << endl;
+
+    return 0;
+}
+
+static void welcome(){
+    cout << "Welcome to CS 106B Word Ladder." << endl;
+    cout << "Please give me two English words, and I will change the" << endl << "first into the second by changing one letter at a time." << endl;
+
+}
+
+static string getfilename(){
+    int s;
     string name;
     do{
         s = 1;
         cout << "Dictionary file name?";
-        cin >> name;
+        getline(cin, name);
         fstream _file;
         _file.open(name, ios :: in);
         if(!_file){
@@ -28,68 +64,80 @@ int main() {
         }
     }while(s == 0);
 
-    string world1;
-    string world2;
-    do{
-        s = 0;
-        cout << "Word #1 (or Enter to quit):";
-        cin >> world1;
-        if (cin.get() == '\n'){
-            cout << "Have a nice day." << endl;
-            return 0;
-        }
-        while (world1[s]) {
-            world1[s] = tolower(world1[s]);
-            s++;
-        }
-        cout << "Word #2 (or Enter to quit):";
-        cin >> world2;
-        if(cin.get() == 'n'){
-            cout << "Have a nice day." << endl;
-            return 0;
-        }
-        s = 0;
-        while (world2[s]) {
-            world2[s] = tolower(world2[s]);
-            s++;
-        }
+    return name;
+}
 
-        if(world1 == world2){
-            cout << "The two words must be different" << endl;
-            continue;
+static bool getword(const Lexicon& dictionary, string& word, string prompt){
+    while (true) {
+        cout << prompt;
+        getline(cin, word);
+        if(word.empty()){
+            return true;
+        }else if(dictionary.contains(word)){
+            return false;
         }
-        if(sizeof(world1) != sizeof(world2)){
-            cout << "The two words must be the same length." << endl;
-            continue;
-        }
+        cout << "The two words must be found in the dictionary." << endl;
+    }
+}
 
-        Lexicon lex(name);
+static bool checkword(const Lexicon& dictionary, string& word1, string& word2){
+    if(word1.length() != word2.length()){
+        cout << "The two words must be the same length.";
+        return getword(dictionary, word1, word2);
+    }
+    return false;
+}
 
-        if((!lex.contains(world1)) || (!lex.contains(world2))){
-            cout << "The two words must be found in the dictionary." << endl;
-        }
+static Vector<string> getwordladder(const Lexicon& dictionary, const string& word1, const string& word2){
+    Queue< Vector<string> > qu;
+    Vector<string> wordladder;
+    Lexicon new_words;
 
-
-    }while(world1 == world2 || sizeof(world1) != sizeof(world2) || (!lex.contains(world1)) || (!lex.contains(world2)));
-
-    int flag[20] = {0};
-    while (world1 != world2) {
-        for(int i = 0; i < int(sizeof(world1)); i++){
-            if(!flag[i]){
-                string tem;
-                tem = world2;
-                tem[i] = world1[i];
-                if(lex.contains(tem)){
-                    world2 = tem;
-                    flag[i] = 1;
-                    cout << world2;
-                }
+    wordladder.add(word1);
+    new_words.add(word1);
+    qu.enqueue(wordladder);
+    while (!qu.isEmpty()) {
+        wordladder = qu.dequeue();
+        string firword = wordladder[wordladder.size() - 1];
+        if(firword == word2){
+            break;
+        }else{
+            for(string word: onehoaway(dictionary, new_words, firword)){
+                Vector<string> wordladderclone = wordladder;
+                wordladderclone.add(word);
+                qu.enqueue(wordladderclone);
             }
         }
-
     }
+    return wordladder;
 
+}
 
+static Lexicon onehoaway(const Lexicon& dictionary, Lexicon& new_words, const string& firword){
+    Lexicon onehoaway;
+    string alphabet = "abcdefghijklmnopqrstuvwxyz";
+    for(int i = 0; i < firword.length(); i++){
+        for(int j = 0; j < alphabet.length(); j++){
+            string testword = firword;
+            testword[i] = alphabet[j];
+            if(dictionary.contains(testword) && !new_words.contains(testword)){
+                onehoaway.add(testword);
+                new_words.add(testword);
+            }
+        }
+    }
+    return onehoaway;
+}
 
-    return 0;
+static void printwordladder(const Vector<string>& wordladder, const string& word1, const string& word2){
+    if(word1 == word2){
+        cout << "Found ladder" << wordladder[0];
+    }else if(wordladder.size() == 1){
+        cout << "No word ladder between \"" << word1 << "\" and \"" << word2 << "\" could be found.";
+    }else {
+        for(string word: wordladder){
+            cout << '  ' << word;
+        }
+    }
+    cout << endl << endl;
 }
