@@ -135,8 +135,9 @@ static void printwordladder(const Vector<string>& wordladder, const string& word
     }else if(wordladder.size() == 1){
         cout << "No word ladder between \"" << word1 << "\" and \"" << word2 << "\" could be found.";
     }else {
+        cout << "change process:";
         for(string word: wordladder){
-            cout << '  ' << word;
+            cout << "  " << word;
         }
     }
     cout << endl << endl;
