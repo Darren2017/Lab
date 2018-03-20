@@ -29,8 +29,8 @@ int main(){
         string word2;
         Vector<string> wordladder;
 
-        if(getword(dictionary, word1, "Word #1 (or Enter to quit):"))   break;
         if(getword(dictionary, word2, "Word #1 (or Enter to quit):"))   break;
+        if(getword(dictionary, word1, "Word #1 (or Enter to quit):"))   break;
         if(checkword(dictionary, word1, word2))     break;
 
         wordladder = getwordladder(dictionary, word1, word2);
