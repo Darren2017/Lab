@@ -8,6 +8,7 @@
 #include "lexicon.h"
 #include "vector.h"
 #include "queue.h"
+#include <algorithm>
 
 using namespace std;
 
@@ -71,6 +72,7 @@ static bool getword(const Lexicon& dictionary, string& word, string prompt){
     while (true) {
         cout << prompt;
         getline(cin, word);
+        transform(word.begin(),word.end(),word.begin(), ::tolower);
         if(word.empty()){
             return true;
         }else if(dictionary.contains(word)){
@@ -135,9 +137,9 @@ static void printwordladder(const Vector<string>& wordladder, const string& word
     }else if(wordladder.size() == 1){
         cout << "No word ladder between \"" << word1 << "\" and \"" << word2 << "\" could be found.";
     }else {
-        cout << "change process:";
+        cout << "A ladder from" << word1 << "back to" << word2 << ":" <<endl;
         for(string word: wordladder){
-            cout << "  " << word;
+            cout << word << "  ";
         }
     }
     cout << endl << endl;
