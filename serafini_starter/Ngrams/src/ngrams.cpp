@@ -6,7 +6,7 @@
 #include "console.h"
 #include "hashmap.h"
 #include "simpio.h"
-#include "vector.h"
+#include <vector>
 #include "filelib.h"
 
 using namespace std;
@@ -27,6 +27,7 @@ int main()
     makemap();
     PrintText();
 
+    cout << "Exitng";
     return 0;
 }
 
