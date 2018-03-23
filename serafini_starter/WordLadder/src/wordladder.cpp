@@ -8,7 +8,6 @@
 #include "lexicon.h"
 #include "vector.h"
 #include "queue.h"
-#include <algorithm>
 
 using namespace std;
 
