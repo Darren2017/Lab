@@ -15,16 +15,18 @@ static void welcome();
 static void makemap();
 static string getfilename();
 static Vector<string> fillmapkeys(ifstream &infile, int n);
-static void makecriculation(Vector<string> firstWords);
+static void makecirculation(Vector<string>& firstWords);
 static void PrintText();
 
 HashMap<Vector<string>, Vector<string>> mymap;
 Vector<string> window;
+Vector<string> firstWords;
 
 int main()
 {
     welcome();
     makemap();
+    makecirculation(firstWords);
     PrintText();
 
     cout << "Exitng";
@@ -72,7 +74,7 @@ static Vector<string> fillmapkeys(ifstream &infile, int n){
         infile >> word;
         window.add(word);
     }
-    Vector<string> firstWords = window;
+    firstWords = window;
     infile >> word;
     while(!infile.fail()){
         mymap[window].add(word);
@@ -83,7 +85,7 @@ static Vector<string> fillmapkeys(ifstream &infile, int n){
     return firstWords;
 }
 
-static void makecirculation(Vector<string> firstWords){
+static void makecirculation(Vector<string>& firstWords){
     for(int i =  0; i < firstWords.size(); i++){
         mymap[window].add(firstWords[i]);
         window.remove(0);
