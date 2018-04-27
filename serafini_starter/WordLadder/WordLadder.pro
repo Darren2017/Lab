@@ -26,7 +26,7 @@ TEMPLATE = app
 
 # make sure we do not accidentally #include files placed in 'resources'
 CONFIG += no_include_pwd
-CONFIG += console
+
 # checks to ensure that the Stanford C++ library and its associated
 # Java back-end are both present in this project
 !exists($$PWD/lib/StanfordCPPLib/private/version.h) {
