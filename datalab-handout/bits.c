@@ -151,8 +151,8 @@ int bitAnd(int x, int y) {
  */
 int getByte(int x, int n) {
   int move = n << 3;
-  int result = x >> move;
-  result = result & 0xff;
+  int process = x >> move;
+  int result = process & 0xff;
 
   return result;
 }
@@ -166,8 +166,8 @@ int getByte(int x, int n) {
  */
 int logicalShift(int x, int n) {
   x = x >> n;
-  int handle = (1 << n) - 1;
-  handle = handle << (32 - n);
+  int handle = (1 << n) + (~1 + 1);
+  handle = handle << (32 + (~n + 1));
   handle = ~handle;
   return x & handle;
 }
@@ -179,72 +179,12 @@ int logicalShift(int x, int n) {
  *   Rating: 4
  */
 int bitCount(int x) {
-  int result = 0;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  result += x & 1;
-  x = x >> 1;
-  return result;
+  x = (x & 0x55555555) + ((x >> 1) & 0x55555555);  
+  x = (x & 0x33333333) + ((x >> 2) & 0x33333333);  
+  x = (x & 0x0f0f0f0f) + ((x >> 4) & 0x0f0f0f0f);  
+  x = (x & 0x00ff00ff) + ((x >> 8) & 0x00ff00ff);  
+  x = (x & 0x0000ffff) + ((x >> 16) & 0x0000ffff);  
+  return x;
 }
 /* 
  * bang - Compute !x without using !
@@ -253,8 +193,14 @@ int bitCount(int x) {
  *   Max ops: 12
  *   Rating: 4 
  */
-int bang(int x) {
-  return 2;
+int bang(int x) {         //未完成----------------------------
+  x = ~ x;
+  x = (x & 0x55555555) + ((x >> 1) & 0x55555555);  
+  x = (x & 0x33333333) + ((x >> 2) & 0x33333333);  
+  x = (x & 0x0f0f0f0f) + ((x >> 4) & 0x0f0f0f0f);  
+  x = (x & 0x00ff00ff) + ((x >> 8) & 0x00ff00ff);  
+  x = (x & 0x0000ffff) + ((x >> 16) & 0x0000ffff);  
+  return (x >> 4) >> 2;
 }
 /* 
  * tmin - return minimum two's complement integer 
@@ -274,7 +220,7 @@ int tmin(void) {
  *   Max ops: 15
  *   Rating: 2
  */
-int fitsBits(int x, int n) {
+int fitsBits(int x, int n) {          //未完成----------------------------------
   return 2;
 }
 /* 
@@ -286,7 +232,7 @@ int fitsBits(int x, int n) {
  *   Rating: 2
  */
 int divpwr2(int x, int n) {
-  int handle = (1 << n) -1;
+  int handle = (1 << n) + (~1 + 1);
   int bias = (x >> 31) & handle;
   return (x + bias) >> n;
 }
@@ -298,7 +244,9 @@ int divpwr2(int x, int n) {
  *   Rating: 2
  */
 int negate(int x) {
-  return 2;
+  x = ~x;
+  x = x + 0x1;
+  return x;
 }
 /* 
  * isPositive - return 1 if x > 0, return 0 otherwise 
@@ -308,7 +256,7 @@ int negate(int x) {
  *   Rating: 3
  */
 int isPositive(int x) {
-  return 2;
+  return (~(x >> 31) & 0x1) ^ !x;
 }
 /* 
  * isLessOrEqual - if x <= y  then return 1, else return 0 
@@ -317,7 +265,7 @@ int isPositive(int x) {
  *   Max ops: 24
  *   Rating: 3
  */
-int isLessOrEqual(int x, int y) {
+int isLessOrEqual(int x, int y) {         //未完成-----------------------------------
   return 2;
 }
 /*
@@ -327,7 +275,8 @@ int isLessOrEqual(int x, int y) {
  *   Max ops: 90
  *   Rating: 4
  */
-int ilog2(int x) {
+int ilog2(int x) {                    //未完成--------------------------------------------
+  
   return 2;
 }
 /* 
