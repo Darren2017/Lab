@@ -265,8 +265,12 @@ int isPositive(int x) {
  *   Max ops: 24
  *   Rating: 3
  */
-int isLessOrEqual(int x, int y) {         //未完成-----------------------------------
-  return 2;
+int isLessOrEqual(int x, int y) {
+  int handle = y + (~x + 1);
+  int result = ~(handle >> 31) & 0x1;
+  int i = x >> 31 & 1;
+  int j = y >> 31 & 1;
+  return (result & !(i ^ j)) | (!!(i - j + 1) & (i ^ j));
 }
 /*
  * ilog2 - return floor(log base 2 of x), where x > 0
