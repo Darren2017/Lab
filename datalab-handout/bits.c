@@ -220,8 +220,10 @@ int tmin(void) {
  *   Max ops: 15
  *   Rating: 2
  */
-int fitsBits(int x, int n) {          //未完成----------------------------------
-  return 2;
+int fitsBits(int x, int n) {
+  int move = 32 + (~n + 1);
+  int result = (x << move) >> move;
+  return !(result ^ x);
 }
 /* 
  * divpwr2 - Compute x/(2^n), for 0 <= n <= 30
@@ -279,9 +281,13 @@ int isLessOrEqual(int x, int y) {
  *   Max ops: 90
  *   Rating: 4
  */
-int ilog2(int x) {                    //未完成--------------------------------------------
-  
-  return 2;
+int ilog2(int x) {
+  int result = (!!(x >> 16)) << 4;
+  result += (!!(x >> (8 + result)) << 3);
+  result += (!!(x >> (4 + result)) << 2);
+  result += (!!(x >> (2 + result)) << 1);
+  result += (!!(x >> (1 + result)));
+  return result;
 }
 /* 
  * float_neg - Return bit-level equivalent of expression -f for
