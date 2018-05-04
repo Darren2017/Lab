@@ -300,8 +300,13 @@ int ilog2(int x) {
  *   Max ops: 10
  *   Rating: 2
  */
-unsigned float_neg(unsigned uf) {
- return 2;
+unsigned float_neg(unsigned uf){
+  unsigned temp = uf & 0x7fffffff;
+  unsigned resulte = uf ^ 0x80000000;
+  if(temp > 0x7f800000){
+    resulte = uf;
+  }
+  return resulte;
 }
 /* 
  * float_i2f - Return bit-level equivalent of expression (float) x
