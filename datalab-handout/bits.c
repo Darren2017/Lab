@@ -319,7 +319,7 @@ unsigned float_neg(unsigned uf){
  */
 unsigned float_i2f(int x) {
   unsigned sign = x >> 31 & 0x1;
-  unsigned exp, fra, framask;
+  unsigned exp, fra, framask = 0x7fffff;
   int i, rounding;
   if(x == 0){
     return 0;
@@ -335,7 +335,6 @@ unsigned float_i2f(int x) {
     }
     exp = i + 127;
     x = x << (31 - i);
-    framask = 0x7fffff;
     fra = (x >> 8) & framask;
 
     x = x & 0xff;
@@ -361,5 +360,11 @@ unsigned float_i2f(int x) {
  *   Rating: 4
  */
 unsigned float_twice(unsigned uf) {
-  return 2;
+  unsigned result = uf;
+  if((result & 0x7f800000) == 0){
+    result = ((result & 0x007fffff) << 1) | (result & 0x80000000);
+  }else if((result & 0x7f800000) != 0x7f800000){
+    result += 0x00800000;
+  }
+  return result;
 }
