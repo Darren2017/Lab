@@ -318,7 +318,36 @@ unsigned float_neg(unsigned uf){
  *   Rating: 4
  */
 unsigned float_i2f(int x) {
-  return 2;
+  unsigned sign = x >> 31 & 0x1;
+  unsigned exp, fra, framask;
+  int i, rounding;
+  if(x == 0){
+    return 0;
+  }else if(x == 0x80000000){
+    return 0xcf000000;
+  }else{
+    if(sign){
+      x = -x;
+    }
+    i = 30;
+    while(!(x >> i)){
+      i--;
+    }
+    exp = i + 127;
+    x = x << (31 - i);
+    framask = 0x7fffff;
+    fra = (x >> 8) & framask;
+
+    x = x & 0xff;
+    rounding = x > 128 || ((x == 128) && fra & 1);
+    fra += rounding;
+
+    if(fra >> 23){
+      fra &= framask;
+      exp++;
+    }
+  }
+  return (sign << 31) | (exp << 23) | fra;
 }
 /* 
  * float_twice - Return bit-level equivalent of expression 2*f for
