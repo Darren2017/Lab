@@ -1,15 +1,16 @@
 #include<iostream>
 using namespace std;
 
-short D[200][200] = {0}, Z[200][200] = {0};
+short D[200][200] = {0};    //记录已走的路径
+short Z[200][200] = {0};    //记录这里是否有墙
 int nx[] = {1, 0, -1, 0};
 int ny[] = {0, 1, 0, -1};
 int M, N;         //M-------高度       N --------------长度  
 
-void generate_maze(int x, int y);
-void generate_wall();
-void print();
-void read();
+void generate_maze(int x, int y);   //产生一个迷宫，即打通相应的墙
+void generate_wall();               //安放所有的墙
+void print();                       //显示迷宫
+void read();                        //读取长高
 
 int main()
 {
@@ -48,7 +49,7 @@ void generate_maze(int x, int y){
     }
 }
 
-void generate_wall(){
+void generate_wall(){           //在偶数列和行安放墙
     for(int i = 0; i < 2 * N + 1; i++){
         if(i % 2 == 0){
             for(int j = 0; j < 2 * M + 1; j++){
